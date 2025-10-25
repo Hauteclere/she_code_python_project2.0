@@ -1,0 +1,1 @@
+"""Weather widgets for She Codes Weather."""
