@@ -8,10 +8,10 @@ from she_codes_weather.widgets.page_footer.page_footer import PageFooterWidget
 class HomePageWidget(HTMLWidget):
     title = "She Codes Weather"
     page_heading = PageHeadingWidget().render()
-    # date_and_time = DateAndTimeWidget().render()
-    # daily_summary = DailySummaryWidget().render()
-    # weekly_forecast = WeeklyForecastWidget().render()
-    # page_footer  = PageFooterWidget().render()
+    date_and_time = DateAndTimeWidget().render()
+    daily_summary = DailySummaryWidget().render()
+    weekly_forecast = WeeklyForecastWidget().render()
+    page_footer  = PageFooterWidget().render()
     
     template_path = "./homepage.html"
     css_path = "./styles.css"
