@@ -169,7 +169,8 @@ class HTMLWidget():
         """
 
         self.env = Environment(
-            loader=BaseLoader
+            loader=BaseLoader,
+            autoescape=True
         )
 
         self.template_path  = self._get_template_path()
@@ -190,9 +191,7 @@ class HTMLWidget():
                  corresponding class attribute values.
         """
  
-        template = Environment(
-            loader=BaseLoader
-        ).from_string(
+        template = self.env.from_string(
             self.template_source
         )
         
