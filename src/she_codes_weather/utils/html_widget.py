@@ -152,7 +152,7 @@ class HTMLWidget(ABC, metaclass=ABCMeta):
             if not hasattr(self, v):   
                 raise NotImplementedError(f'''
                     The template for the {self.__class__.__name__} class calls for a template variable called "{v}". 
-                    But this attribute is not defined on the class!
+                    But this attribute is not set by the __init__ method!
                 ''')
             
         return variables
