@@ -69,9 +69,10 @@ class TestHTMLWidgetBasicFunctionality(TestHTMLWidget):
         
         class SimpleWidget(HTMLWidget):
             template_path = str(template_file_path)
-            title = "Test Title"
+            def __init__(self, title):
+                self.title = title
             
-        widget = SimpleWidget()
+        widget = SimpleWidget("Test Title")
         rendered = widget.render()
         
         self.assertIn("<h1>", rendered)
@@ -85,10 +86,14 @@ class TestHTMLWidgetBasicFunctionality(TestHTMLWidget):
         
         class MultiVarWidget(HTMLWidget):
             template_path = str(template_file_path)
-            title = "Main Title"
-            content = "This is the content"
+            def __init__(self, title, content):
+                self.title = title 
+                self.content = content 
             
-        widget = MultiVarWidget()
+        widget = MultiVarWidget(
+            title = "Main Title",
+            content = "This is the content"
+        )
         rendered = widget.render()
         
         self.assertIn("Main Title", rendered)
@@ -110,9 +115,11 @@ class TestHTMLWidgetCSSFunctionality(TestHTMLWidget):
         class StyledWidget(HTMLWidget):
             template_path = str(template_file_path)
             css_path = str(css_file_path)
-            title = "Styled Title"
             
-        widget = StyledWidget()
+            def __init__(self, title):
+                self.title = title
+            
+        widget = StyledWidget(title="Styled Title")
         rendered = widget.render()
         
         self.assertIn("<style>", rendered)
@@ -128,9 +135,11 @@ class TestHTMLWidgetCSSFunctionality(TestHTMLWidget):
         class NoStyleWidget(HTMLWidget):
             template_path = str(template_file_path)
             # css_path not defined (None)
-            title = "Unstyled Title"
             
-        widget = NoStyleWidget()
+            def __init__(self, title):
+                self.title = title
+            
+        widget = NoStyleWidget(title="Unstyled Title")
         rendered = widget.render()
         
         self.assertNotIn("<style>", rendered)
@@ -154,10 +163,15 @@ class TestHTMLWidgetCSSFunctionality(TestHTMLWidget):
         class FullPageWidget(HTMLWidget):
             template_path = str(template_file_path)
             css_path = str(css_file_path)
-            page_title = "Test Page"
-            heading = "Welcome"
             
-        widget = FullPageWidget()
+            def __init__(self, page_title, heading):
+                self.page_title = page_title 
+                self.heading = heading 
+            
+        widget = FullPageWidget(
+            page_title="Test Page",
+            heading="Welcome"
+        )
         rendered = widget.render()
         
         self.assertIn("<style>", rendered)
@@ -180,9 +194,11 @@ class TestHTMLWidgetCSSFunctionality(TestHTMLWidget):
         class NoHeadWidget(HTMLWidget):
             template_path = str(template_file_path)
             css_path = str(css_file_path)
-            heading = "No Head Test"
             
-        widget = NoHeadWidget()
+            def __init__(self, heading):
+                self.heading = heading 
+            
+        widget = NoHeadWidget(heading="No Head Test")
         rendered = widget.render()
         
         self.assertIn("<head>", rendered)  # Should create head
@@ -198,9 +214,11 @@ class TestHTMLWidgetCSSFunctionality(TestHTMLWidget):
         class FragmentWidget(HTMLWidget):
             template_path = str(template_file_path)
             css_path = str(css_file_path)
-            content = "Fragment content"
             
-        widget = FragmentWidget()
+            def __init__(self, content):
+                self.content = content 
+            
+        widget = FragmentWidget(content="Fragment content")
         rendered = widget.render()
         
         self.assertIn("<style>", rendered)
@@ -215,9 +233,11 @@ class TestHTMLWidgetCSSFunctionality(TestHTMLWidget):
         class MissingCSSWidget(HTMLWidget):
             template_path = str(template_file_path)
             css_path = "nonexistent.css"  # File doesn't exist
-            title = "No CSS File"
             
-        widget = MissingCSSWidget()
+            def __init__(self, title):
+                self.title = title 
+            
+        widget = MissingCSSWidget(title="No CSS File")
         rendered = widget.render()
         
         self.assertNotIn("<style>", rendered)
@@ -234,10 +254,14 @@ class TestHTMLWidgetValidation(TestHTMLWidget):
         
         class MissingVarWidget(HTMLWidget):
             template_path = str(template_file_path)
-            # missing_var not defined
+            
+            def __init__(self, missing_var):
+                # missing_var not defined
+                pass
+                
             
         with self.assertRaises(NotImplementedError) as context:
-            MissingVarWidget()
+            MissingVarWidget(missing_var="missing var")
         self.assertIn("missing_var", str(context.exception))
         
     def test_template_with_comments_removed(self):
@@ -251,9 +275,11 @@ class TestHTMLWidgetValidation(TestHTMLWidget):
         
         class CommentWidget(HTMLWidget):
             template_path = str(template_file_path)
-            title = "Test Title"
             
-        widget = CommentWidget()
+            def __init__(self, title):
+                self.title = title 
+            
+        widget = CommentWidget(title="Test Title")
         rendered = widget.render()
         
         self.assertNotIn("<!--", rendered)
@@ -286,9 +312,11 @@ class TestHTMLWidgetSaveFunction(TestHTMLWidget):
         
         class SaveTestWidget(HTMLWidget):
             template_path = str(template_file_path)
-            title = "Save Test"
             
-        widget = SaveTestWidget()
+            def __init__(self, title):
+                self.title = title 
+            
+        widget = SaveTestWidget(title="Save Test")
         widget.save()
         
         # Check that file was created
@@ -323,9 +351,11 @@ class TestHTMLWidgetPathResolution(TestHTMLWidget):
             
             class RelativePathWidget(HTMLWidget):
                 template_path = "./test.html"
-                message = "Relative path works"
                 
-            widget = RelativePathWidget()
+                def __init__(self, message):
+                    self.message = message
+                
+            widget = RelativePathWidget(message="Relative path works")
             rendered = widget.render()
             self.assertIn("Relative path works", rendered)
 
@@ -358,11 +388,17 @@ class TestHTMLWidgetIntegration(TestHTMLWidget):
         class CompleteWidget(HTMLWidget):
             template_path = str(template_file_path)
             css_path = str(css_file_path)
-            title = "Complete Widget"
-            description = "This widget has everything!"
-            author = "Test Author"
             
-        widget = CompleteWidget()
+            def __init__(self, title, description, author):
+                self.title = title 
+                self.description = description 
+                self.author = author 
+            
+        widget = CompleteWidget(
+            title="Complete Widget",
+            description="This widget has everything!",
+            author="Test Author"
+        )
         rendered = widget.render()
         
         # Check template variables

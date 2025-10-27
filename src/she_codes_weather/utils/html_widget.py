@@ -223,11 +223,9 @@ class HTMLWidget(ABC, metaclass=ABCMeta):
         template = self.env.from_string(
             self.template_source
         )
-        
-        all_items = self.__class__.__dict__ | self.__dict__
 
         data = {
-            key: val for key, val in all_items.items() if key in self.variables 
+            key: val for key, val in self.__dict__.items() if key in self.variables 
         }
 
         return Markup(template.render(**data))

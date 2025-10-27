@@ -31,6 +31,6 @@ class HomePageWidget(HTMLWidget):
         daily_summary = DailySummaryWidget(
             source_data = "./data/this_week.csv"
         ).render()
-        
+
         page_footer  = PageFooterWidget().render()
 
