@@ -9,9 +9,16 @@
     <body>
         {{ page_heading }}
         {{ date_and_time }}
-        {{ weekly_forecast }}
-        {{ next_week_forecast }}
+        
+        <h1>Today's Weather</h1>
         {{ daily_summary }}
+
+        <h2>This Week's Forecast:</h2>
+        {{ weekly_forecast }}
+
+        <h2>Next Week's Forecast:</h2>
+        {{ next_week_forecast }}
+        
         {{ page_footer }}        
     </body>
 </html>

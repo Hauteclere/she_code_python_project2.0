@@ -20,16 +20,16 @@ class HomePageWidget(HTMLWidget):
 
         self.date_and_time = DateAndTimeWidget().render()
 
+        self.daily_summary = DailySummaryWidget(
+            source_data = "./data/this_week.csv"
+        ).render()
+
         self.weekly_forecast = WeeklyForecastWidget(
             source_data = "./data/this_week.csv"
         ).render()
 
         self.next_week_forecast = WeeklyForecastWidget(
             source_data = "./data/next_week.csv"
-        ).render()
-
-        self.daily_summary = DailySummaryWidget(
-            source_data = "./data/this_week.csv"
         ).render()
 
         self.page_footer  = PageFooterWidget().render()
