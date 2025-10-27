@@ -6,14 +6,31 @@ from she_codes_weather.widgets.weekly_forecast.weekly_forecast import WeeklyFore
 from she_codes_weather.widgets.page_footer.page_footer import PageFooterWidget
 
 class HomePageWidget(HTMLWidget):
-    title = "She Codes Weather"
-    page_heading = PageHeadingWidget().render()
-    date_and_time = DateAndTimeWidget().render()
-    daily_summary = DailySummaryWidget().render()
-    weekly_forecast = WeeklyForecastWidget().render()
-    page_footer  = PageFooterWidget().render()
+    
     
     template_path = "./homepage.html"
     css_path = "./styles.css"
     
+    def __init__(self):
+        self.title = "She Codes Weather"
+
+        self.page_heading = PageHeadingWidget(
+            heading_text="She Codes Weather"
+        ).render()
+
+        date_and_time = DateAndTimeWidget().render()
+
+        weekly_forecast = WeeklyForecastWidget(
+            source_data = "./data/this_week.csv"
+        ).render()
+
+        next_week_forecast = WeeklyForecastWidget(
+            source_data = "./data/next_week.csv"
+        ).render()
+
+        daily_summary = DailySummaryWidget(
+            source_data = "./data/this_week.csv"
+        ).render()
+        
+        page_footer  = PageFooterWidget().render()
 

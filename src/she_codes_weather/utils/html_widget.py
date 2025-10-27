@@ -2,8 +2,10 @@ import sys, os
 from pathlib import Path
 from bs4 import BeautifulSoup, Comment
 from jinja2 import Environment, BaseLoader, TemplateSyntaxError, meta
+from abc import ABCMeta, ABC
+from markupsafe import Markup
 
-class HTMLWidget():
+class HTMLWidget(ABC, metaclass=ABCMeta):
     """
     Base class for creating HTML widgets with template and CSS support.
     
@@ -155,19 +157,21 @@ class HTMLWidget():
             
         return variables
 
-    def __init__(self):
+    def _post_init(self):
         """
-        Initialize the HTML widget.
+        Initialize the object as an HTML widget.
         
         Sets up the Jinja2 environment, processes the template file (including CSS injection),
         and validates that all template variables have corresponding class attributes.
+
+        This needs to happen after the object is originally initialised, because we need to check
+        that it got all the variables that its template defines.
         
         Raises:
             NotImplementedError: If template_path is not defined or if template variables
                                don't have corresponding class attributes.
             ValueError: If the template contains invalid Jinja2 syntax.
         """
-
         self.env = Environment(
             loader=BaseLoader,
             autoescape=True
@@ -178,6 +182,31 @@ class HTMLWidget():
         self._check_template_syntax()
         self.variables = self._get_variables()
 
+
+    def __init_subclass__(cls, **kwargs):
+        """
+        Hack the base Widget class so that subclasses of it will have a custom `__call__`
+        method injected into them without needing to define a metaclass explicitly. 
+
+        This simplifies the widget syntax, making it less likely to break.
+        """
+        super().__init_subclass__(**kwargs)
+
+        meta = type(cls)
+
+        # this should only run if the subclass hasn't already been patched
+        if not hasattr(meta, "_patched"):
+            original_call = meta.__call__
+
+            def custom_call(cls, *args, **kwargs):
+                instance = original_call(cls, *args, **kwargs)
+                # Only call _post_init if this is actually an HTMLWidget instance
+                if isinstance(instance, HTMLWidget) and hasattr(instance, '_post_init'):
+                    instance._post_init()
+                return instance
+            
+            meta.__call__ = custom_call
+            meta._patched = True
 
     def render(self):
         """
@@ -195,11 +224,13 @@ class HTMLWidget():
             self.template_source
         )
         
+        all_items = self.__class__.__dict__ | self.__dict__
+
         data = {
-            key: val for key, val in self.__class__.__dict__.items() if key in self.variables 
+            key: val for key, val in all_items.items() if key in self.variables 
         }
 
-        return template.render(**data)
+        return Markup(template.render(**data))
     
     def save(self):
         """
@@ -214,4 +245,5 @@ class HTMLWidget():
         """
         with open(f"./{self.__class__.__name__}_output.html", 'w') as output_file:
             output_file.write(self.render())
+
     
