@@ -32,8 +32,8 @@ class HTMLWidget(ABC, metaclass=ABCMeta):
             NotImplementedError: If template_path class attribute is not defined.
         """
         if self.template_path is None:
-            raise NotImplementedError('''
-                All widgets must define the 'template_path' class attribute. 
+            raise NotImplementedError(f'''
+                The {self.__class__.__name__} class needs to define the 'template_path' class attribute! 
                 This attribute should set the template location for the widget.    
             ''')
         
@@ -123,7 +123,7 @@ class HTMLWidget(ABC, metaclass=ABCMeta):
             self.env.parse(self.template_source)
         except TemplateSyntaxError as e:
             raise ValueError(f'''
-                Invalid template supplied to {self.__cls__.__name__}. 
+                Invalid template supplied to {self.__class__.__name__}. 
                 Error on line {e.lineno} of template.
                 Error message: {e.message}
             ''')
