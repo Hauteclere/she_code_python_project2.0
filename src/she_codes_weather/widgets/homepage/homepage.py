@@ -18,19 +18,19 @@ class HomePageWidget(HTMLWidget):
             heading_text="She Codes Weather"
         ).render()
 
-        date_and_time = DateAndTimeWidget().render()
+        self.date_and_time = DateAndTimeWidget().render()
 
-        weekly_forecast = WeeklyForecastWidget(
+        self.weekly_forecast = WeeklyForecastWidget(
             source_data = "./data/this_week.csv"
         ).render()
 
-        next_week_forecast = WeeklyForecastWidget(
+        self.next_week_forecast = WeeklyForecastWidget(
             source_data = "./data/next_week.csv"
         ).render()
 
-        daily_summary = DailySummaryWidget(
+        self.daily_summary = DailySummaryWidget(
             source_data = "./data/this_week.csv"
         ).render()
 
-        page_footer  = PageFooterWidget().render()
+        self.page_footer  = PageFooterWidget().render()
 
